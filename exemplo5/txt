@@ -4,7 +4,6 @@ import 'dart:math';
 void main() {
   runApp(CalculadoraApp());
 }
-
 class CalculadoraApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -30,21 +29,28 @@ class _CalculadoraState extends State<Calculadora> {
     double resultado;
 
     setState(() {
-      if (operacao == "Somar") {
-        resultado = numero1 + numero2;
-        _resultado = "O resultado é $resultado";
-      } else if (operacao == "Sub") {
-        resultado = numero1 - numero2;
-        _resultado = "O resultado é $resultado";
-      } else if (operacao == "Multi") {
-        resultado = numero1 * numero2;
-        _resultado = "O resultado é $resultado";
-      } else if (numero2 != 0 && operacao == "Div") {
-        resultado = numero1 / numero2;
-        _resultado = "O resultado é $resultado";
-      } else {
-        _resultado = "O resultado é Nao pode ser dividido por zero";
-      }
+     switch (operacao) {
+    case 'Somar':
+      resultado = numero1 + numero2;
+      break;
+    case 'Subtrair':
+      resultado = numero1 - numero2;
+      break;
+    case 'Multiplicar':
+      resultado = numero1 * numero2;
+      break;
+    case 'Dividir':
+      resultado = numero2 != 0 ? numero1 / numero2 : double.infinity;
+      break;
+    case 'Potencia':
+      resultado = pow(numero1, numero2);
+      break;
+    default:
+      resultado = 0.0;
+  }
+
+
+      _resultado = resultado != null ? 'Resultado: $resultado' : 'Erro na operação';
     });
   }
 
@@ -77,23 +83,7 @@ class _CalculadoraState extends State<Calculadora> {
               child: Text('Somar'),
             ),
             SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () => _calcular('Sub'),
-              child: Text('Sub'),
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () => _calcular('Multi'),
-              child: Text('Multi'),
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () => _calcular('Div'),
-              child: Text('Div'),
-            ),
-            SizedBox(height: 16.0),
-            Text(_resultado,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+            Text(_resultado, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
           ],
         ),
       ),
