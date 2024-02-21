@@ -24,9 +24,9 @@ class Calculadora extends StatefulWidget {
 class _CalculadoraState extends State<Calculadora> {
   TextEditingController _controllerNumero1 = TextEditingController();
   int _contadorTentativas = 0;
-  int _numeroAleatorio = Random().nextInt(4)+1;
-      
-Bool acertou = false;
+  int _numeroAleatorio = Random().nextInt(4) + 1;
+
+  bool acertou = false;
   String _resultado = '';
 
   void _calcular() {
@@ -35,16 +35,19 @@ Bool acertou = false;
     setState(() {
       if (_numeroAleatorio != numero1) {
         String quase;
-        
+
         if (numero1 > _numeroAleatorio) {
-          quase = "TENTE UM NÚMERO MAIS BAIXO \n TENTATIVAS:$_contadorTentativas";
+          quase =
+              "TENTE UM NÚMERO MAIS BAIXO \n TENTATIVAS:$_contadorTentativas";
         } else {
-          quase = "TENTE UM NÚMERO MAIS ALTO \n TENTATIVAS:$_contadorTentativas" ;
+          quase =
+              "TENTE UM NÚMERO MAIS ALTO \n TENTATIVAS:$_contadorTentativas";
         }
         _resultado = "ERROU! $quase";
         _contadorTentativas++;
       } else {
-        _resultado = "Parabéns, você acertou em $_contadorTentativas tentativas!";
+        _resultado =
+            "Parabéns, você acertou em $_contadorTentativas tentativas!";
         _contadorTentativas = 0;
         _numeroAleatorio = numero1;
       }
@@ -54,14 +57,14 @@ Bool acertou = false;
   }
 
   void _visibility() {
-    setState(() {
-      
-    });
+    setState(() {});
   }
+
   void _jogarNovamente() {
     setState(() {
-      _numeroAleatorio = Random().nextInt(4)+1;
+      _numeroAleatorio = Random().nextInt(4) + 1;
       _resultado = '';
+      acertou = false;
     });
   }
 
