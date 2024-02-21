@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -21,28 +23,45 @@ class Calculadora extends StatefulWidget {
 
 class _CalculadoraState extends State<Calculadora> {
   TextEditingController _controllerNumero1 = TextEditingController();
-
+  int _contadorTentativas = 0;
+  int _numeroAleatorio = Random().nextInt(4)+1;
+      
+Bool acertou = false;
   String _resultado = '';
 
   void _calcular() {
-    int numero1 = int.tryParse(_controllerNumero1.text) ?? 00;
-
-    double resultado;
+    int numero1 = int.tryParse(_controllerNumero1.text) ?? 0;
 
     setState(() {
-      bool certo = false;
-      Random rd = new Random();
-      int numeroAleatorio = rd.nextInt(5);
-      int cont = 0;
-      while (certo) {
-        if (numeroAleatorio != numero1) {
-          _resultado = "ERROU,EU ACHO";
+      if (_numeroAleatorio != numero1) {
+        String quase;
+        
+        if (numero1 > _numeroAleatorio) {
+          quase = "TENTE UM NÚMERO MAIS BAIXO \n TENTATIVAS:$_contadorTentativas";
         } else {
-          _resultado = "Duas palavras Para-Bens";
-          certo = true;
+          quase = "TENTE UM NÚMERO MAIS ALTO \n TENTATIVAS:$_contadorTentativas" ;
         }
-        cont++;
+        _resultado = "ERROU! $quase";
+        _contadorTentativas++;
+      } else {
+        _resultado = "Parabéns, você acertou em $_contadorTentativas tentativas!";
+        _contadorTentativas = 0;
+        _numeroAleatorio = numero1;
       }
+      // Limpa o texto do campo de texto após a verificação
+      _controllerNumero1.clear();
+    });
+  }
+
+  void _visibility() {
+    setState(() {
+      
+    });
+  }
+  void _jogarNovamente() {
+    setState(() {
+      _numeroAleatorio = Random().nextInt(4)+1;
+      _resultado = '';
     });
   }
 
@@ -65,12 +84,19 @@ class _CalculadoraState extends State<Calculadora> {
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: () => ('Somar'),
-              child: Text('Somar'),
+              onPressed: _calcular, // Chama a função _calcular
+              child: Text('Tentar'),
+            ),
+            SizedBox(height: 8.0),
+            ElevatedButton(
+              onPressed: _jogarNovamente, // Chama a função _jogarNovamente
+              child: Text('Jogar Novamente'),
             ),
             SizedBox(height: 16.0),
-            Text(_resultado,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+            Text(
+              _resultado,
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
