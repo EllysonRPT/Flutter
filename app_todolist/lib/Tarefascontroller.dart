@@ -17,5 +17,11 @@ class TareasController extends ChangeNotifier {
       notifyListeners();
     }
   }
-  void 
+
+  void excluirTarefas(int indice) {
+    if (indice >= 0 && indice < _tarefas.length) {
+      _tarefas.removeAt(indice);
+      notifyListeners();
+    }
+  }
 }
