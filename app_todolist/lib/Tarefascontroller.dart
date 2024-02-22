@@ -11,12 +11,13 @@ class TarefasController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void marcarComoConcluida(int indice) {
+  void marcarComoConcluida(int indice, bool value) {
     if (indice >= 0 && indice < _tarefas.length) {
-      _tarefas[indice].concluida = true;
+      _tarefas[indice].concluida = value;
       notifyListeners();
     }
   }
+  
 
   void excluirTarefas(int indice) {
     if (indice >= 0 && indice < _tarefas.length) {
