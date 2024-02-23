@@ -1,5 +1,6 @@
-import 'package:app_todolist/TarefasController.dart';
-import 'package:app_todolist/TarefasScreen.dart';
+
+import 'package:app_todo/TarefasController.dart';
+import 'package:app_todo/TarefasScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

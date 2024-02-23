@@ -1,4 +1,4 @@
-import 'package:app_todolist/Tarefascontroller.dart';
+import 'package:app_todo/TarefasController.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,7 +53,7 @@ class TarefasScreen extends StatelessWidget {
                         value: model.tarefas[index].concluida,
                         onChanged: (value) {
                           // Chamando o método marcarComoConcluida do Provider para atualizar o estado
-                          model.marcarComoConcluida(index,value!);
+                          model.marcarComoConcluida(index,value);
                         },
                       ),
                       // Exclui a tarefa ao manter pressionado

@@ -1,4 +1,4 @@
-import 'package:app_todolist/TarefasModel.dart';
+import 'package:app_todo/TarefasModel.dart';
 import 'package:flutter/material.dart';
 
 class TarefasController extends ChangeNotifier {
@@ -11,7 +11,7 @@ class TarefasController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void marcarComoConcluida(int indice, bool value) {
+  void marcarComoConcluida(int indice,value) {
     if (indice >= 0 && indice < _tarefas.length) {
       _tarefas[indice].concluida = value;
       notifyListeners();
