@@ -7,8 +7,11 @@ class TarefasController extends ChangeNotifier {
 
   //metodo para adiconar  uma nova tarefa
   void adicionarTarefa(String descricao) {
-    _tarefas.add(Tarefas(descricao, false));
+    if (descricao.trim().isNotEmpty) {
+       _tarefas.add(Tarefas(descricao, false));
     notifyListeners();
+    }
+   
   }
 
   void marcarComoConcluida(int indice,value) {
@@ -24,5 +27,9 @@ class TarefasController extends ChangeNotifier {
       _tarefas.removeAt(indice);
       notifyListeners();
     }
+  }
+  String getData(){
+    
+    return
   }
 }
