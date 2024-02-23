@@ -3,5 +3,5 @@ class Tarefas {
   bool concluida;
   DateTime dataHora;
   //construtor
-  Tarefas(this.descricao, this.concluida,this.dataHora);
+  Tarefas(this.descricao, this.concluida): dataHora = DateTime.now();
 }

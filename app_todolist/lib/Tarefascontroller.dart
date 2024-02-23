@@ -28,8 +28,12 @@ class TarefasController extends ChangeNotifier {
       notifyListeners();
     }
   }
-  String getData(){
-    
-    return
-  }
+  //  String getDataHoraUltimaTarefaAdicionada() {
+  //   if (_tarefas.isNotEmpty) {
+  //     return DateFormat('dd/MM/yyyy HH:mm').format(_tarefas.last.dataHora);
+  //   } else {
+  //     return '';
+  //   }
+  // }
 }
+
