@@ -46,6 +46,8 @@ class TarefasScreen extends StatelessWidget {
           Expanded(
             child: Consumer<TarefasController>(
               builder: (context, model, child) {
+                // Ordenar as tarefas em ordem alfabética
+                model.tarefas.sort((a, b) => a.descricao.compareTo(b.descricao));
                 return ListView.builder(
                   itemCount: model.tarefas.length,
                   itemBuilder: (context, index) {
@@ -72,7 +74,7 @@ class TarefasScreen extends StatelessWidget {
               },
             ),
           ),
-        ],a
+        ],
       ),
     );
   }
