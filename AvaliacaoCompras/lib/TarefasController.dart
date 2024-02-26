@@ -35,6 +35,20 @@ class TarefasController extends ChangeNotifier {
     }
   }
  
- 
+ void atualizarTarefa(int indice, String novaDescricao) {
+  if (indice >= 0 && indice < _tarefas.length) {
+    // Verifica se a nova descrição não está vazia ou composta apenas de espaços em branco
+    if (novaDescricao.trim().isNotEmpty) {
+      // Verifica se não existe uma tarefa com a mesma descrição
+      if (!_tarefas.any((tarefa) => tarefa.descricao == novaDescricao)) {
+        _tarefas[indice].descricao = novaDescricao;
+        notifyListeners();
+      } else {
+        print('Já existe uma tarefa com essa descrição.');
+      }
+    }
+  }
+}
+
 }
 
