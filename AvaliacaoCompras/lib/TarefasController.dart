@@ -50,5 +50,9 @@ class TarefasController extends ChangeNotifier {
   }
 }
 
+ void excluirTodasAsTarefas() {
+    _tarefas.clear();
+    notifyListeners();
+  }
 }
 

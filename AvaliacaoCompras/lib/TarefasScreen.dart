@@ -6,64 +6,111 @@ import 'package:intl/intl.dart';
 class TarefasScreen extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
 
+  void _exibirFeedback(BuildContext context, String mensagem) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensagem),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista de Compras'),
+        title: Text(
+          'Lista de Compras',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.blue, // Altera a cor do AppBar
+        elevation: 0, // Remove a sombra do AppBar
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                labelText: 'Novo Produto',
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    DateTime now = DateTime.now();
-                    String descricaoTarefa =
-                        '${_controller.text} - ${DateFormat('dd/MM/yyyy HH:mm').format(now)}';
-                    Provider.of<TarefasController>(context, listen: false)
-                        .adicionarTarefa(_controller.text);
-                    _controller.clear();
-                  },
-                  icon: Icon(Icons.add),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color.fromARGB(255, 171, 210, 243), Color.fromRGBO(179, 184, 178, 0.694)], // Define um gradiente de cores para o fundo
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  labelText: 'Novo Produto',
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      DateTime now = DateTime.now();
+                      String descricaoTarefa =
+                          '${_controller.text} - ${DateFormat('dd/MM/yyyy HH:mm').format(now)}';
+                      Provider.of<TarefasController>(context, listen: false)
+                          .adicionarTarefa(_controller.text);
+                      _controller.clear();
+                      _exibirFeedback(context, 'Tarefa adicionada com sucesso');
+                    },
+                    icon: Icon(Icons.add),
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: Consumer<TarefasController>(
-              builder: (context, model, child) {
-                model.tarefas.sort((a, b) => a.descricao.compareTo(b.descricao));
-                return ListView.builder(
-                  itemCount: model.tarefas.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(
-                          '${model.tarefas[index].descricao} - ${DateFormat('dd/MM/yyyy HH:mm').format(model.tarefas[index].dataHora)}'),
-                      trailing: Checkbox(
-                        value: model.tarefas[index].concluida,
-                        onChanged: (value) {
-                          model.marcarComoConcluida(index, value);
+            Expanded(
+              child: Consumer<TarefasController>(
+                builder: (context, model, child) {
+                  model.tarefas.sort((a, b) => a.descricao.compareTo(b.descricao));
+                  return ListView.builder(
+                    itemCount: model.tarefas.length,
+                    itemBuilder: (context, index) {
+                      return Dismissible(
+                        key: Key(model.tarefas[index].descricao), // Adicionando uma chave única
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) {
+                          String mensagem = 'Tarefa removida: ${model.tarefas[index].descricao}';
+                          model.excluirTarefas(index);
+                          _exibirFeedback(context, mensagem);
                         },
-                      ),
-                      onLongPress: () {
-                        _exibirDialogoExclusao(context, model, index);
-                      },
-                      // Adicionando o gesto de toque para edição da tarefa
-                      onTap: () {
-                        _editarTarefa(context, model, index);
-                      },
-                    );
-                  },
-                );
-              },
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.only(right: 20.0),
+                          color: Colors.red,
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
+                        child: Card(
+                          color: Color.fromARGB(179, 199, 255, 157), // Cor de fundo do Card
+                          elevation: 3, // Elevação do Card
+                          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          child: ListTile(
+                            title: Text(
+                                '${model.tarefas[index].descricao} - ${DateFormat('dd/MM/yyyy HH:mm').format(model.tarefas[index].dataHora)}'),
+                            trailing: Checkbox(
+                              value: model.tarefas[index].concluida,
+                              onChanged: (value) {
+                                model.marcarComoConcluida(index, value);
+                              },
+                            ),
+                            onLongPress: () {
+                              _exibirDialogoExclusao(context, model, index);
+                            },
+                            onTap: () {
+                              _editarTarefa(context, model, index);
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -86,8 +133,10 @@ class TarefasScreen extends StatelessWidget {
             TextButton(
               child: Text("Sim"),
               onPressed: () {
+                String mensagem = 'Tarefa removida: ${model.tarefas[index].descricao}';
                 model.excluirTarefas(index);
                 Navigator.of(context).pop();
+                _exibirFeedback(context, mensagem);
               },
             ),
           ],
@@ -96,7 +145,6 @@ class TarefasScreen extends StatelessWidget {
     );
   }
 
-  // Método para editar a tarefa
   void _editarTarefa(BuildContext context, TarefasController model, int index) {
     TextEditingController _editarController =
         TextEditingController(text: model.tarefas[index].descricao);
@@ -120,9 +168,9 @@ class TarefasScreen extends StatelessWidget {
             TextButton(
               child: Text("Salvar"),
               onPressed: () {
-                // Atualizar a descrição da tarefa apenas quando o botão "Salvar" for pressionado
                 model.atualizarTarefa(index, _editarController.text);
                 Navigator.of(context).pop();
+                _exibirFeedback(context, 'Tarefa editada com sucesso');
               },
             ),
           ],
