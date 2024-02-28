@@ -1,7 +1,7 @@
-import 'package:app_todo/TarefasController.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:app_todo/TarefasController.dart';
 
 class TarefasScreen extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
@@ -12,6 +12,11 @@ class TarefasScreen extends StatelessWidget {
         content: Text(mensagem),
       ),
     );
+  }
+
+  void _excluirTodasTarefas(BuildContext context) {
+    Provider.of<TarefasController>(context, listen: false).excluirTodasTarefas();
+    _exibirFeedback(context, 'Todas as tarefas foram removidas');
   }
 
   @override
@@ -26,6 +31,14 @@ class TarefasScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.blue, // Altera a cor do AppBar
         elevation: 0, // Remove a sombra do AppBar
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              _excluirTodasTarefas(context);
+            },
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
