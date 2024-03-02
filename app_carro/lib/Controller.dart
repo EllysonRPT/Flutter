@@ -4,8 +4,8 @@ import 'package:app_carro/Model.dart';
 class CarroController {
   //atributo
   List<Carro> _carroLista = [
-    Carro("Fiat Uno",1992,"PATH"),
-    Carro("Classic",2012,"PATH")
+    Carro("Fiat Uno",1992,"img/foto1.jpg"),
+    Carro("Classic",2012,"img/foto2.jpg")
   ];
 
   //method
