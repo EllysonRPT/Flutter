@@ -1,0 +1,188 @@
+{
+    // Use o IntelliSense para saber mais sobre os atributos possíveis.
+    // Focalizar para exibir as descrições dos atributos existentes.
+    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "advivinha",
+            "cwd": "advivinha",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "advivinha (profile mode)",
+            "cwd": "advivinha",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "advivinha (release mode)",
+            "cwd": "advivinha",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "app_carro",
+            "cwd": "app_carro",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "app_carro (profile mode)",
+            "cwd": "app_carro",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "app_carro (release mode)",
+            "cwd": "app_carro",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "app_todolist",
+            "cwd": "app_todolist",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "app_todolist (profile mode)",
+            "cwd": "app_todolist",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "app_todolist (release mode)",
+            "cwd": "app_todolist",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "AvaliacaoCompras",
+            "cwd": "AvaliacaoCompras",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "AvaliacaoCompras (profile mode)",
+            "cwd": "AvaliacaoCompras",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "AvaliacaoCompras (release mode)",
+            "cwd": "AvaliacaoCompras",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "exemplo5",
+            "cwd": "exemplo5",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "exemplo5 (profile mode)",
+            "cwd": "exemplo5",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "exemplo5 (release mode)",
+            "cwd": "exemplo5",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "exemplo_operadores",
+            "cwd": "exemplo_operadores",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "exemplo_operadores (profile mode)",
+            "cwd": "exemplo_operadores",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "exemplo_operadores (release mode)",
+            "cwd": "exemplo_operadores",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "exemplo_widgets",
+            "cwd": "exemplo_widgets",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "exemplo_widgets (profile mode)",
+            "cwd": "exemplo_widgets",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "exemplo_widgets (release mode)",
+            "cwd": "exemplo_widgets",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "exercicio1_widget",
+            "cwd": "exercicio1_widget",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "exercicio1_widget (profile mode)",
+            "cwd": "exercicio1_widget",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "exercicio1_widget (release mode)",
+            "cwd": "exercicio1_widget",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "hello",
+            "cwd": "hello",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "hello (profile mode)",
+            "cwd": "hello",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "hello (release mode)",
+            "cwd": "hello",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
