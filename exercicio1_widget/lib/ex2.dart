@@ -1,4 +1,4 @@
-import 'package:exercicio1_widget/Exercicio1.dart';
+
 import 'package:flutter/material.dart';
 
 void main() {
