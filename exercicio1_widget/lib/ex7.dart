@@ -8,63 +8,41 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Container Example',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Container Example'),
+          title: Text('Widget Stack'),
         ),
         body: Center(
-          child: Container(
-            width:300,
-            height:300,
-            color: Colors.blue,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Implemente ação do botão aqui
-                  },
-                  child: Text(
-                    'Botão',
-                    style: TextStyle(
-                      color: Color(0xCD000000),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                left: 500,
+                top: 100,
+                child: Container(
+                  color: Colors.blue,
+                  width: 200,
+                  height: 200,
                 ),
-                SizedBox(height: 10),
-                Container(
-                  width: 150,
-                  height: 50,
-                  color: Colors.red,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Digite aqui',
-                      hintStyle: TextStyle(color: Colors.white),
-                    ),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  width: 150,
-                  height: 100,
+              ),
+              Positioned(
+               left: 525,
+                top: 125,
+                child: Container(
                   color: Colors.green,
-                  child: Center(
-                    child: Text(
-                      'quer ajuda?',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  width: 150,
+                  height: 150,
                 ),
-              ],
-            ),
+              ),
+              Positioned(
+               left: 550,
+                top: 150,
+                child: Container(
+                  color: Colors.red,
+                  width: 100,
+                  height: 100,
+                ),
+              ),
+            ],
           ),
         ),
       ),

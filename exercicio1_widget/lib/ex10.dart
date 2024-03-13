@@ -4,67 +4,47 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  double _progressValue = 0.0;
+
+  // Função simulada para atualizar o valor da barra de progresso
+  void _updateProgress() {
+    setState(() {
+      if (_progressValue < 1.0) {
+        _progressValue += 0.1;
+      } else {
+        _progressValue = 0.0;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Container Example',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Container Example'),
+          title: Text('Barra de Progresso Dinâmica'),
         ),
         body: Center(
-          child: Container(
-            width:300,
-            height:300,
-            color: Colors.blue,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Implemente ação do botão aqui
-                  },
-                  child: Text(
-                    'Botão',
-                    style: TextStyle(
-                      color: Color(0xCD000000),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  width: 150,
-                  height: 50,
-                  color: Colors.red,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Digite aqui',
-                      hintStyle: TextStyle(color: Colors.white),
-                    ),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  width: 150,
-                  height: 100,
-                  color: Colors.green,
-                  child: Center(
-                    child: Text(
-                      'quer ajuda?',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: _updateProgress,
+                child: Text('Atualizar Progresso'),
+              ),
+              SizedBox(height: 20),
+              LinearProgressIndicator(
+                backgroundColor: Colors.grey[200],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                value: _progressValue,
+              ),
+            ],
           ),
         ),
       ),
