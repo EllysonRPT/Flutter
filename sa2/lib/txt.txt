@@ -1,0 +1,12 @@
+model
+cadatro
+
+future<bool> acessso(user, senha) async {
+bool result = false;
+final Database db = await _getDatabase();
+var retorno = db.rawQuery("SELECT * from  nome_tabela  where user  = 'user' and senha = 'senha'");
+if (retorno>0) {
+    return=true;
+return result 
+}
+}
