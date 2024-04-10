@@ -1,13 +1,13 @@
 class ContatoModel {
   //atributos
-  int id;
+  int senha;
   String nome;
   String email;
   String telefone;
   String endereco;
   //construtor
   ContatoModel({
-    required this.id,
+    required this.senha,
     required this.nome,
     required this.email,
     required this.telefone,
@@ -16,7 +16,7 @@ class ContatoModel {
   //mapeamento 
     Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'senha': senha,
       'nome': nome,
       'email': email,
       'telefone': telefone,
@@ -25,7 +25,7 @@ class ContatoModel {
   }
     factory ContatoModel.fromMap(Map<String, dynamic> map) {
     return ContatoModel(
-      id: map['id'],
+      senha: map['senha'],
       nome: map['nome'],
       email: map['email'],
       telefone: map['telefone'],

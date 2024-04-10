@@ -7,15 +7,13 @@ class BancoDadosCrud {
   static const String TABLE_NOME = 'contacts'; // Nome da tabela
   static const String
       CREATE_CONTACTS_TABLE_SCRIPT = // Script SQL para criar a tabela
-      "CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY," +
+      "CREATE TABLE IF NOT EXISTS contacts(senha INTEGER PRIMARY KEY," +
           "nome TEXT, email TEXT, telefone TEXT," +
           "endereco TEXT)";
 
-  
   Future<Database> _getDatabase() async {
     return openDatabase(
-      join(
-          await getDatabasesPath(), DB_NOME), // Caminho do banco de dados
+      join(await getDatabasesPath(), DB_NOME), // Caminho do banco de dados
       onCreate: (db, version) {
         return db.execute(
             CREATE_CONTACTS_TABLE_SCRIPT); // Executa o script de criação da tabela quando o banco é criado
@@ -23,6 +21,7 @@ class BancoDadosCrud {
       version: 1,
     );
   }
+
   // Método para criar um novo contato no banco de dados
   Future<void> create(ContatoModel model) async {
     try {
@@ -62,8 +61,8 @@ class BancoDadosCrud {
       await db.update(
         TABLE_NOME,
         model.toMap(),
-        where: "id = ?", // Condição para atualizar o contato com base no ID
-        whereArgs: [model.id],
+        where: "senha = ?", // Condição para atualizar o contato com base no senha
+        whereArgs: [model.senha],
       );
     } catch (ex) {
       print(ex);
@@ -72,13 +71,13 @@ class BancoDadosCrud {
   }
 
   // Método para excluir um contato do banco de dados
-  Future<void> delete(int id) async {
+  Future<void> delete(int senha) async {
     try {
       final Database db = await _getDatabase();
       await db.delete(
         TABLE_NOME,
-        where: "id = ?", // Condição para excluir o contato com base no ID
-        whereArgs: [id],
+        where: "senha = ?", // Condição para excluir o contato com base no senha
+        whereArgs: [senha],
       );
     } catch (ex) {
       print(ex);

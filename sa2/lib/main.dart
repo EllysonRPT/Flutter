@@ -1,22 +1,20 @@
-
 import 'package:flutter/material.dart';
-import 'View.dart';
+import 'package:sa2/login.dart';
+// import 'package:sa2/login_page.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Exemplo SqlLite",
+      title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue
+        primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }
