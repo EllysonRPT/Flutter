@@ -3,12 +3,11 @@ import 'package:sa2_correcao/UserModel.dart';
 import 'package:sqflite/sqflite.dart';
 
 class BancoDadosCrud {
-  static const String DB_NOME = 'users.db'; // Nome do banco de dados
-  static const String TABLE_NOME = 'users'; // Nome da tabela
+  static const String DB_NOME = 'banco.db'; // Nome do banco de dados
+  static const String TABLE_NOME = 'usuario'; // Nome da tabela
   static const String
       SCRIPT_CRIACAO_TABELA = // Script SQL para criar a tabela
-      "CREATE TABLE IF NOT EXISTS contacts(id SERIAL PRIMARY KEY," +
-          "nome TEXT,"+ "email TEXT,"+  "senha TEXT";
+      "CREATE TABLE IF NOT EXISTS usuario(id SERIAL PRIMARY KEY,nome TEXT,email  TEXT unique,senha TEXT)";
 
   Future<Database> _chamarBanco() async {
     return openDatabase(
@@ -17,7 +16,7 @@ class BancoDadosCrud {
         return db.execute(
             SCRIPT_CRIACAO_TABELA); // Executa o script de criação da tabela quando o banco é criado
       },
-      version: 1,
+      version: 2,
     );
   }
 
