@@ -1,9 +1,12 @@
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:avaliacao_lista/DataBaseController.dart';
 import 'package:avaliacao_lista/UserModel.dart';
 import 'package:avaliacao_lista/ViewCadastro.dart';
 import 'package:avaliacao_lista/ViewConfiguracoes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class LoginScreen extends StatelessWidget {
@@ -68,7 +71,21 @@ class _LoginFormState extends State<LoginForm> {
     }
   }
 
+  void _logoff() {
+    // Limpar os dados de autenticação do usuário (substitua isso com suas próprias lógicas de autenticação)
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.remove('accessToken'); // Substitua 'accessToken' com a chave que você usou para armazenar o token de acesso
+    });
+
+    // Redirecionar o usuário para a tela de login
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  }
+
   @override
+  // ignore: override_on_non_overriding_member
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -129,6 +146,11 @@ class _LoginFormState extends State<LoginForm> {
                   );
                 },
                 child: Text('Não tem uma conta? Cadastre-se'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _logoff,
+                child: Text('Sair'), // Texto do botão de logoff
               ),
             ],
           ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'ViewLogin.dart'; // Importe sua tela de login
 
 class ConfiguracoesPage extends StatefulWidget {
-  //atributo
   final String email;
 
   ConfiguracoesPage({required this.email});
@@ -13,16 +14,15 @@ class ConfiguracoesPage extends StatefulWidget {
 }
 
 class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
-  //Atributos
   late SharedPreferences _prefs;
-  bool _darkMode = false;
   final String email;
-  String _idioma = 'pt-br';
-  // String idiomas = ['PT_BR', 'EN-US', 'ES-AR'];
+  TextEditingController _tarefaController = TextEditingController();
+
+  // Lista de tarefas
+  List<String> _tarefas = [];
 
   _ConfiguracoesPageState({required this.email});
 
-  //Métodos
   @override
   void initState() {
     super.initState();
@@ -32,68 +32,239 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
   Future<void> _loadPreferences() async {
     _prefs = await SharedPreferences.getInstance();
     setState(() {
-      _darkMode = _prefs.getBool('${email}darkMode') ?? false;
-      _idioma = _prefs.getString('${email}idioma') ?? 'pt-br';
+      // Carregar as tarefas salvas
+      _tarefas = _prefs.getStringList('${email}tarefas') ?? [];
     });
   }
 
-  Future<void> _mudarDarkMode() async {
+  Future<void> _salvarTarefas() async {
+    await _prefs.setStringList('${email}tarefas', _tarefas);
+  }
+
+  void _adicionarTarefa(String tarefa) {
     setState(() {
-      _darkMode = !_darkMode;
+      _tarefas.add(tarefa);
+      _tarefaController.clear(); // Limpa o campo de texto
+      _salvarTarefas();
     });
-    await _prefs.setBool('${email}darkMode', _darkMode);
+
+    // Exibir feedback ao usuário
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Expanded(child: Text('Tarefa adicionada: $tarefa')),
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  Future<void> mudarIdioma() async {
-    setState(() async {
-      await _prefs.setString('${email}SelIdioma', _idioma);
-    });
+  void _removerTarefa(int index) {
+    final tarefaRemovida = _tarefas.removeAt(index);
+    _salvarTarefas();
+
+    // Exibir feedback ao usuário
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Expanded(child: Text('Tarefa removida: $tarefaRemovida')),
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ],
+        ),
+        action: SnackBarAction(
+          label: 'Desfazer',
+          onPressed: () {
+            setState(() {
+              _tarefas.insert(index, tarefaRemovida);
+              _salvarTarefas();
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  void _editarTarefa(int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        String novaTarefa = _tarefas[index];
+        return AlertDialog(
+          title: Text('Editar Tarefa'),
+          content: TextFormField(
+            controller: TextEditingController(text: novaTarefa),
+            onChanged: (value) {
+              novaTarefa = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _tarefas[index] = novaTarefa;
+                  _salvarTarefas();
+                  Navigator.of(context).pop();
+                });
+
+                // Exibir feedback ao usuário
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        Expanded(child: Text('Tarefa editada com sucesso.')),
+                        IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedTheme(
-      data: _darkMode
-          ? ThemeData.dark()
-          : ThemeData.light(), // Define o tema com base no modo escuro
-      duration: Duration(milliseconds: 500), // Define a duração da transição
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Teste de Armazenamento Interno'),
-        ),
-        body: Center(
-          child: Column(
-            children: [
-              Text("Selecione o Modo Escuro"),
-              Switch(
-                value: _darkMode,
-                onChanged: (value) {
-                  _mudarDarkMode();
-                },
-              ),
-              Text("Selecione o Idioma"),
-              DropdownButton<String>(
-                value: _idioma,
-                onChanged: (value) {
-                  mudarIdioma();
-                },
-                items: <DropdownMenuItem<String>>[
-                  DropdownMenuItem(
-                    value: 'pt-br',
-                    child: Text('Português (Brasil)'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'en-us',
-                    child: Text('Inglês (EUA)'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'es-ar',
-                    child: Text('Espanhol (Argentina)'),
-                  ),
-                ],
-              )
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Lista de Tarefas'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              _logout();
+            },
           ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: _tarefas.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(_tarefas[index]),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          _editarTarefa(index);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          _removerTarefa(index);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _tarefaController,
+                    decoration: InputDecoration(
+                      labelText: 'Nova Tarefa',
+                    ),
+                    onFieldSubmitted: (value) {
+                      if (value.isNotEmpty) {
+                        _adicionarTarefa(value);
+                      }
+                    },
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    final novaTarefa = _tarefaController.text.trim();
+                    if (novaTarefa.isNotEmpty) {
+                      _adicionarTarefa(novaTarefa);
+                    } else {
+                      // Exibir feedback ao usuário se o campo estiver vazio
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              Expanded(child: Text('Por favor, insira uma tarefa.')),
+                              IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () {
+                                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _logout() async {
+    // Limpar as preferências
+    await _prefs.remove('${email}darkMode');
+    await _prefs.remove('${email}idioma');
+
+    // Redirecionar para a tela anterior
+    Navigator.pop(context);
+
+    // Exibir feedback ao usuário
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Expanded(child: Text('Você saiu da conta.')),
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ],
         ),
       ),
     );
