@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:avaliacao_lista/DataBaseController.dart';
@@ -7,7 +5,6 @@ import 'package:avaliacao_lista/UserModel.dart';
 import 'package:avaliacao_lista/ViewCadastro.dart';
 import 'package:avaliacao_lista/ViewConfiguracoes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -34,58 +31,7 @@ class _LoginFormState extends State<LoginForm> {
   TextEditingController _senhaController = TextEditingController();
   bool _loading = false;
 
-  void _login() async {
-    if (_formKey.currentState!.validate()) {
-      String email = _emailController.text;
-      String senha = _senhaController.text;
-
-      setState(() {
-        _loading = true;
-      });
-
-      BancoDadosCrud bancoDados = BancoDadosCrud();
-      try {
-        User? user = await bancoDados.getUser(email, senha);
-        if (user != null) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ConfiguracoesPage(email: user.email),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Email ou senha incorretos'),
-          ));
-        }
-      } catch (e) {
-        print('Erro durante o login: $e');
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Erro durante o login. Tente novamente mais tarde.'),
-        ));
-      } finally {
-        setState(() {
-          _loading = false;
-        });
-      }
-    }
-  }
-
-  void _logoff() {
-    // Limpar os dados de autenticação do usuário (substitua isso com suas próprias lógicas de autenticação)
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.remove('accessToken'); // Substitua 'accessToken' com a chave que você usou para armazenar o token de acesso
-    });
-
-    // Redirecionar o usuário para a tela de login
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
-  }
-
   @override
-  // ignore: override_on_non_overriding_member
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -147,16 +93,48 @@ class _LoginFormState extends State<LoginForm> {
                 },
                 child: Text('Não tem uma conta? Cadastre-se'),
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _logoff,
-                child: Text('Sair'), // Texto do botão de logoff
-              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _login() async {
+    if (_formKey.currentState!.validate()) {
+      String email = _emailController.text;
+      String senha = _senhaController.text;
+
+      setState(() {
+        _loading = true;
+      });
+
+      BancoDadosCrud bancoDados = BancoDadosCrud();
+      try {
+        User? user = await bancoDados.getUser(email, senha);
+        if (user != null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ConfiguracoesPage(email: user.email),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Email ou senha incorretos'),
+          ));
+        }
+      } catch (e) {
+        print('Erro durante o login: $e');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Erro durante o login. Tente novamente mais tarde.'),
+        ));
+      } finally {
+        setState(() {
+          _loading = false;
+        });
+      }
+    }
   }
 
   bool isValidEmail(String email) {

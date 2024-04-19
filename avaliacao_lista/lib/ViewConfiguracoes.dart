@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'ViewLogin.dart'; // Importe sua tela de login
+import 'package:avaliacao_lista/ViewLogin.dart'; // Importe a tela de login
 
 class ConfiguracoesPage extends StatefulWidget {
   final String email;
@@ -16,10 +15,12 @@ class ConfiguracoesPage extends StatefulWidget {
 class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
   late SharedPreferences _prefs;
   final String email;
+  late ScaffoldMessengerState _scaffoldMessengerState;
   TextEditingController _tarefaController = TextEditingController();
 
   // Lista de tarefas
-  List<String> _tarefas = [];
+  List<Map<String, Object>> _tarefas = [];
+  bool _mostrarConcluidas = false;
 
   _ConfiguracoesPageState({required this.email});
 
@@ -29,27 +30,36 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
     _loadPreferences();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _scaffoldMessengerState = ScaffoldMessenger.of(context);
+  }
+
   Future<void> _loadPreferences() async {
     _prefs = await SharedPreferences.getInstance();
     setState(() {
       // Carregar as tarefas salvas
-      _tarefas = _prefs.getStringList('${email}tarefas') ?? [];
+      _tarefas = (_prefs.getStringList('${email}tarefas') ?? []).map((task) {
+        return {'descricao': task, 'concluida': false};
+      }).toList();
     });
   }
 
   Future<void> _salvarTarefas() async {
-    await _prefs.setStringList('${email}tarefas', _tarefas);
+    await _prefs.setStringList('${email}tarefas',
+        _tarefas.map((task) => task['descricao'] as String).toList());
   }
 
   void _adicionarTarefa(String tarefa) {
     setState(() {
-      _tarefas.add(tarefa);
+      _tarefas.add({'descricao': tarefa, 'concluida': false});
       _tarefaController.clear(); // Limpa o campo de texto
       _salvarTarefas();
     });
 
     // Exibir feedback ao usuário
-    ScaffoldMessenger.of(context).showSnackBar(
+    _scaffoldMessengerState.showSnackBar(
       SnackBar(
         content: Row(
           children: [
@@ -57,7 +67,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
             IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                _scaffoldMessengerState.hideCurrentSnackBar();
               },
             ),
           ],
@@ -67,41 +77,43 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
   }
 
   void _removerTarefa(int index) {
-    final tarefaRemovida = _tarefas.removeAt(index);
-    _salvarTarefas();
+    setState(() {
+      final tarefaRemovida = _tarefas.removeAt(index);
+      _salvarTarefas();
 
-    // Exibir feedback ao usuário
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Expanded(child: Text('Tarefa removida: $tarefaRemovida')),
-            IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              },
-            ),
-          ],
+      // Exibir feedback ao usuário
+      _scaffoldMessengerState.showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Expanded(child: Text('Tarefa removida: ${tarefaRemovida['descricao']}')),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  _scaffoldMessengerState.hideCurrentSnackBar();
+                },
+              ),
+            ],
+          ),
+          action: SnackBarAction(
+            label: 'Desfazer',
+            onPressed: () {
+              setState(() {
+                _tarefas.insert(index, tarefaRemovida);
+                _salvarTarefas();
+              });
+            },
+          ),
         ),
-        action: SnackBarAction(
-          label: 'Desfazer',
-          onPressed: () {
-            setState(() {
-              _tarefas.insert(index, tarefaRemovida);
-              _salvarTarefas();
-            });
-          },
-        ),
-      ),
-    );
+      );
+    });
   }
 
   void _editarTarefa(int index) {
     showDialog(
       context: context,
       builder: (context) {
-        String novaTarefa = _tarefas[index];
+        String novaTarefa = _tarefas[index]['descricao'] as String;
         return AlertDialog(
           title: Text('Editar Tarefa'),
           content: TextFormField(
@@ -120,13 +132,13 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  _tarefas[index] = novaTarefa;
+                  _tarefas[index]['descricao'] = novaTarefa;
                   _salvarTarefas();
-                  Navigator.of(context).pop();
                 });
-
+                // Fechar o diálogo
+                Navigator.of(context).pop();
                 // Exibir feedback ao usuário
-                ScaffoldMessenger.of(context).showSnackBar(
+                _scaffoldMessengerState.showSnackBar(
                   SnackBar(
                     content: Row(
                       children: [
@@ -134,7 +146,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
                         IconButton(
                           icon: Icon(Icons.close),
                           onPressed: () {
-                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            _scaffoldMessengerState.hideCurrentSnackBar();
                           },
                         ),
                       ],
@@ -150,16 +162,40 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
     );
   }
 
+  void _concluirTarefa(int index) {
+    setState(() {
+      _tarefas[index]['concluida'] = !(_tarefas[index]['concluida'] as bool);
+      _salvarTarefas();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final tarefasFiltradas = _mostrarConcluidas
+        ? _tarefas.where((tarefa) => tarefa['concluida'] as bool).toList()
+        : _tarefas;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista de Tarefas'),
-        actions: <Widget>[
+        actions: [
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: Icon(_mostrarConcluidas ? Icons.check_box : Icons.check_box_outline_blank),
             onPressed: () {
-              _logout();
+              setState(() {
+                _mostrarConcluidas = !_mostrarConcluidas;
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              // Navegar de volta para a tela de login
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+                (route) => false,
+              );
             },
           ),
         ],
@@ -168,11 +204,15 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: _tarefas.length,
+              itemCount: tarefasFiltradas.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_tarefas[index]),
-                  trailing: Row(
+                return CheckboxListTile(
+                  title: Text(tarefasFiltradas[index]['descricao'] as String),
+                  value: tarefasFiltradas[index]['concluida'] as bool,
+                  onChanged: (value) {
+                    _concluirTarefa(index);
+                  },
+                  secondary: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
@@ -218,7 +258,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
                       _adicionarTarefa(novaTarefa);
                     } else {
                       // Exibir feedback ao usuário se o campo estiver vazio
-                      ScaffoldMessenger.of(context).showSnackBar(
+                      _scaffoldMessengerState.showSnackBar(
                         SnackBar(
                           content: Row(
                             children: [
@@ -226,7 +266,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
                               IconButton(
                                 icon: Icon(Icons.close),
                                 onPressed: () {
-                                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                  _scaffoldMessengerState.hideCurrentSnackBar();
                                 },
                               ),
                             ],
@@ -240,32 +280,6 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Future<void> _logout() async {
-    // Limpar as preferências
-    await _prefs.remove('${email}darkMode');
-    await _prefs.remove('${email}idioma');
-
-    // Redirecionar para a tela anterior
-    Navigator.pop(context);
-
-    // Exibir feedback ao usuário
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Expanded(child: Text('Você saiu da conta.')),
-            IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              },
-            ),
-          ],
-        ),
       ),
     );
   }

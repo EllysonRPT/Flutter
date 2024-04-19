@@ -36,16 +36,29 @@ class _CadastroFormState extends State<CadastroForm> {
 
     BancoDadosCrud bancoDados = BancoDadosCrud();
     try {
-      bancoDados.create(user);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Usuário cadastrado com sucesso!')),
-      );
-      Navigator.pop(context); // Redireciona para a tela de login
+      // Verifica se o email já está cadastrado antes de criar o usuário
+      bool emailCadastrado = await bancoDados.existsUser(email, password);
+      if (emailCadastrado) {
+        // Exibe uma mensagem informando que o email já está cadastrado
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('O email informado já está cadastrado. Por favor, insira um email diferente.')),
+        );
+      } else {
+        // Se o email não estiver cadastrado, cria o usuário
+        bancoDados.create(user);
+        
+        // Exibe uma mensagem de sucesso e redireciona para a tela de login
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Usuário cadastrado com sucesso!')),
+        );
+        Navigator.pop(context); // Redireciona para a tela de login
+      }
     } catch (e) {
+      // Exibe uma mensagem de erro caso ocorra algum problema
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao cadastrar usuário: $e')),
       );
-    }
+    } 
   }
 
   @override

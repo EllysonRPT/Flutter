@@ -10,7 +10,7 @@ class BancoDadosCrud {
       SCRIPT_CRIACAO_TABELA = // Script SQL para criar a tabela
       "CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY," +
           "nome TEXT, " +
-          "email TEXT, " +
+          "email TEXT UNIQUE, " +
           "senha TEXT)";
 
   // Método para obter uma instância do banco de dados
