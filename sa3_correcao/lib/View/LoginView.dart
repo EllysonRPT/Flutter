@@ -70,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
             children: <Widget>[
               Text(
                 'Login',
+                
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

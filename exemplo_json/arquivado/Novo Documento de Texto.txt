@@ -1,0 +1,18 @@
+flutter pub add sqflite
+flutter pub   
+flutter upgrade
+flutter pub get
+flutter --version   
+flutter pub add path
+flutter pub add shared_preferences
+flutter doctor
+flutter pub add path_provider
+
+tela inicial
+<usuario>
+<senha>
+botao acessar
+botao cadastrar
+
+tela interna 
+configuraçoes do usuario
