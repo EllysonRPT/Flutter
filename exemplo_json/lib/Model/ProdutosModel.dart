@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Produto {
   //atributo
   final nome;
