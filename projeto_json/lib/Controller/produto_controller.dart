@@ -11,6 +11,11 @@ class ProdutoController {
     return _produtos;
   }
 
+  //set
+  set produtos(List<Produto> produtos) {
+    _produtos = produtos;
+  }
+
   //save produtos no json
   Future<void> salvar_json() async {
     final file = File('produtos.json');
@@ -19,13 +24,14 @@ class ProdutoController {
   }
 
   //carrega
-  Future<void> carregar_json() async {
+  Future<List<Produto>> carregar_json() async {
     try {
       final file = File('produtos.json');
       final jsonList = json.decode(await file.readAsString());
-      _produtos = jsonList.map((json) => Produto.fromJson(json)).toList();
+      produtos = jsonList.map((json) => Produto.fromJson(json)).toList();
     } catch (e) {
-      _produtos = [];
+      produtos = [];
     }
+    return produtos;
   }
 }
