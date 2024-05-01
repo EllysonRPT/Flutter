@@ -4,8 +4,9 @@ class Livro {
   final String sinopse;
   final String categoria;
   final int isbn;
+  final String capa;
  
-  Livro({required this.titulo, required this.autor, required this.sinopse, required this.categoria, required this.isbn});
+  Livro({required this.titulo, required this.autor, required this.sinopse, required this.categoria, required this.isbn, required this.capa});
 
   //metodo
 
@@ -16,15 +17,17 @@ Map<String,dynamic> toJson(){
    'sinopse': sinopse,
     'categoria': categoria,
     'isbn': isbn,
+    'capa': capa
   };
 }
-factory Livro.fromJson(Map<String,dynamic>json){
+factory Livro.fromJson(Map<String,dynamic> json ){
   return Livro(
     titulo: json['titulo'],
     autor: json['autor'],
     sinopse: json['sinopse'],
     categoria: json['categoria'],
     isbn: json['isbn'],
+    capa: json['capa']
   );
 }
 }

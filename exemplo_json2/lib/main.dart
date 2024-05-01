@@ -1,6 +1,4 @@
-import 'package:exemplo_json2/Model/livro_model.dart';
 import 'package:flutter/material.dart';
-
 import 'View/lista_livros_view.dart';
 void main() {
   runApp(MyApp());

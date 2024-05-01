@@ -1,5 +1,4 @@
 import 'package:exemplo_json2/View/info_livro_view.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../Controller/livro_controller.dart';
 
@@ -22,7 +21,7 @@ class _LivrosPageState extends State<LivrosPage> {
         padding: EdgeInsets.all(12),
         child: Expanded(
           child: FutureBuilder(
-            future: controller.loadLivro(),
+            future: controller.loadLivros(),
             builder: (context, snapshot) {
               if (controller.livros.isEmpty) {
                 return Center( 
@@ -31,6 +30,7 @@ class _LivrosPageState extends State<LivrosPage> {
               } else {
                 return ListView.builder(itemCount: controller.livros.length, itemBuilder:(context, index){
                 return ListTile(
+                   leading: Image.asset(controller.livros[index].capa),
                   title: Text(controller.livros[index].titulo),
                   subtitle: Text(controller.livros[index].autor),
                   onTap: () => Navigator.push(
