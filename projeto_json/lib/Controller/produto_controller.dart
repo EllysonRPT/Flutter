@@ -1,3 +1,18 @@
+import '../Model/carros_model.dart';
+
+class ProdutoController {
+  final List<Carro> _carros = [];
+
+  // void adicionarCarro(Carro carro) {
+  //   _carros.add(carro);
+  // }
+}
+
+
+
+
+
+
 // import 'dart:convert';
 // import 'dart:io';
 

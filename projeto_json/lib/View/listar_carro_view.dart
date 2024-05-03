@@ -11,6 +11,8 @@ class CarrosListarScreen extends StatefulWidget {
 class _CarrosListarScreenState extends State<CarrosListarScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(title: Text("Lista de Carros"),),
+    );
   }
 }
