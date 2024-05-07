@@ -1,8 +1,11 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:projeto_json/Controller/carros_controller.dart';
+import 'package:projeto_json/Model/carros_model.dart';
 
 class Carro_Cadastro_Screen extends StatefulWidget {
   const Carro_Cadastro_Screen({super.key});
@@ -31,7 +34,7 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
         padding: EdgeInsets.all(12),
         child: SingleChildScrollView(
           child: Form(
-            key:_formKey,
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -44,7 +47,7 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                   validator: (value) {
-                    if (value!.trim().isNotEmpty)
+                    if (value!.trim().isEmpty)
                       return "Placa Obrigatório";
                     else {
                       return null;
@@ -59,7 +62,7 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                   validator: (value) {
-                    if (value!.trim().isNotEmpty)
+                    if (value!.trim().isEmpty)
                       return "Modelo Obrigatório";
                     else {
                       return null;
@@ -74,7 +77,7 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                   validator: (value) {
-                    if (value!.trim().isNotEmpty)
+                    if (value!.trim().isEmpty)
                       return "marca Obrigatório";
                     else {
                       return null;
@@ -89,7 +92,7 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                   validator: (value) {
-                    if (value!.trim().isNotEmpty)
+                    if (value!.trim().isEmpty)
                       return "ano Obrigatório";
                     else {
                       return null;
@@ -104,7 +107,7 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                   validator: (value) {
-                    if (value!.trim().isNotEmpty)
+                    if (value!.trim().isEmpty)
                       return "cor Obrigatório";
                     else {
                       return null;
@@ -119,7 +122,7 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                   validator: (value) {
-                    if (value!.trim().isNotEmpty)
+                    if (value!.trim().isEmpty)
                       return "descricao Obrigatório";
                     else {
                       return null;
@@ -134,7 +137,7 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
                   validator: (value) {
-                    if (value!.trim().isNotEmpty)
+                    if (value!.trim().isEmpty)
                       return "valor Obrigatório";
                     else {
                       return null;
@@ -157,9 +160,11 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
                   child: Text('Tirar Foto'),
                 ),
                 ElevatedButton(
-                  onPressed: (){if (_formKey.currentState!.validate()) {
-                    
-                  }} ,
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _cadastrarCarro();  
+                    }
+                  },
                   child: Text("cadastro de Carro"),
                 )
               ],
@@ -179,20 +184,58 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
       });
     }
   }
-  
-  // void _cadastrarCarro() {
-  //   final placa = _placaController.text;
-  //   final modelo = double.tryParse(_modeloController.text) ?? 0.0;
-  //   final marca = _marcaController.text;
-  //   if (placa.isNotEmpty && modelo > 0 && marca.isNotEmpty) {
-  //     setState(() {
-  //       _produtoController.adicionarProduto(Carro(placa: placa, modelo: modelo, marca: marca));
-  //       _produtoController.saveProdutos();
-  //     });
-  //     _placaController.clear();
-  //     _modeloController.clear();
-  //     _marcaController.clear();
-  //   }
-  // }
 
+  Carro criarObjeto() {
+    return Carro(
+        placa: _placaController.text,
+        modelo: _modeloController.text,
+        marca: _marcaController.text,
+        ano: int.parse(_anoController.text),
+        cor: _corController.text,
+        descricao: _descricaoController.text,
+        foto: _imagemSelecionada!.path,
+        valor: double.parse(_valorController.text));
+  }
+
+  CarrosController _controller = new CarrosController();
+
+  void limparValores() {
+    _placaController.clear();
+    _modeloController.clear();
+    _marcaController.clear();
+    _anoController.clear();
+    _corController.clear();
+    _descricaoController.clear();
+    _valorController.clear();
+    _imagemSelecionada = null;
+       setState(() {
+      
+    });
+  }
+
+  void _apagarCampos() {
+    _placaController.text = "";
+    _modeloController.text = "";
+    _marcaController.text = "";
+    _anoController.text = "";
+    _corController.text = "";
+    _descricaoController.text = "";
+    _valorController.text = "";
+    _imagemSelecionada = null;
+     setState(() {
+      
+    });
+  }
+
+  void _cadastrarCarro() {
+    //verificação
+    _controller.addCarro(criarObjeto());
+    limparValores();
+    _apagarCampos();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Carro Cadastrado com Sucesso"),
+      ),
+    );
+  }
 }
