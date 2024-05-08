@@ -21,7 +21,7 @@ class Carro {
       required this.valor});
 
         //métodos
-  Map<String, dynamic> tojson() {
+  Map<String, dynamic> toJson() {
     return {
       'placa': placa,
       'modelo': modelo,

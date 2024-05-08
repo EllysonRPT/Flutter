@@ -13,6 +13,8 @@ class Carro_Cadastro_Screen extends StatefulWidget {
   @override
   State<Carro_Cadastro_Screen> createState() => _Carro_Cadastro_ScreenState();
 }
+  CarrosController _controller = new CarrosController();
+
 
 class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
   final _formKey = GlobalKey<FormState>();
@@ -197,7 +199,6 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
         valor: double.parse(_valorController.text));
   }
 
-  CarrosController _controller = new CarrosController();
 
   void limparValores() {
     _placaController.clear();
@@ -230,6 +231,7 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
   void _cadastrarCarro() {
     //verificação
     _controller.addCarro(criarObjeto());
+    _controller.saveCarrosToFile(); //
     limparValores();
     _apagarCampos();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -239,3 +241,4 @@ class _Carro_Cadastro_ScreenState extends State<Carro_Cadastro_Screen> {
     );
   }
 }
+
