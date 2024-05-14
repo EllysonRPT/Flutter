@@ -2,79 +2,33 @@ import 'package:flutter/material.dart';
 import 'servico.dart';
 
 class WeatherScreen extends StatefulWidget {
+  const WeatherScreen({Key? key}) : super(key: key);
+
   @override
-  _WeatherScreenState createState() => _WeatherScreenState();
+  State<WeatherScreen> createState() => _WeatherScreenState();
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
   final WeatherService _weatherService = WeatherService(
-    apiKey: 'b9ebe666087f299f5e2aad3a03d093b6',
-    baseUrl: 'https://api.openweathermap.org/data/2.5',
+    apiKey:
+        '681126f28e7d6fa3a7cfe0da0671e599', // Chave de API para acesso à API de previsão do tempo.
+    baseUrl:
+        'https://api.openweathermap.org/data/2.5', // URL base da API de previsão do tempo.
   );
 
-  Map<String, dynamic> _weatherData = {};
+  late Map<String, dynamic> _weatherData;
+  TextEditingController _cityController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Weather Forecast'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    String cityName = '';
-                    return AlertDialog(
-                      title: Text('Enter City'),
-                      content: TextField(
-                        onChanged: (value) {
-                          cityName = value;
-                        },
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Enter City',
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            if (cityName.isNotEmpty) {
-                              _fetchWeatherData(cityName);
-                            }
-                          },
-                          child: Text('OK'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: Text('Enter City'),
-            ),
-            SizedBox(height: 20),
-            if (_weatherData.isEmpty)
-              CircularProgressIndicator()
-            else
-              Column(
-                children: [
-                  Text('City: ${_weatherData['name']}'),
-                  Text('Temperature: ${(_weatherData['main']['temp'] - 273.15).toStringAsFixed(2)} °C'),
-                  Text('Description: ${_weatherData['weather'][0]['description']}'),
-                ],
-              ),
-            SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
+  void initState() {
+    super.initState();
+    _weatherData = new Map<String, dynamic>();
   }
+
+  // void dispose() {
+  //   super.dispose();
+  // }
 
   Future<void> _fetchWeatherData(String city) async {
     try {
@@ -83,7 +37,61 @@ class _WeatherScreenState extends State<WeatherScreen> {
         _weatherData = weatherData;
       });
     } catch (e) {
-      print('Error fetching weather data: $e');
+      print(e);
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Exemplo Weather-API")),
+      body: Padding(
+        padding: EdgeInsets.all(12),
+        child: Center(
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _cityController,
+                  decoration: const InputDecoration(labelText: "Digite a Cidade"),
+                  validator: (value) {
+                    if (value!.trim().isEmpty) {
+                      return "Insira a Cidade";
+                    } else {
+                      return null;
+                    }
+                  },
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      _fetchWeatherData(_cityController.text);
+                    }
+                  },
+                  child: const Text("Buscar"),
+                ),
+                SizedBox(height: 20),
+                _weatherData.isEmpty
+                    ? const Text('')
+                    : Column(
+                        children: [
+                          Text(
+                            'Cidade: ${_weatherData['name']}',
+                          ),
+                          Text(
+                            'Temperatura: ${(_weatherData['main']['temp'] - 273.15).toStringAsFixed(2)} °C',
+                          ),
+                          Text(
+                            'Descriçâo: ${_weatherData['weather'][0]['description']}',
+                          ),
+                        ],
+                      ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
