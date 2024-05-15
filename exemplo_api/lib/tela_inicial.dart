@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'servico.dart';
 
 class WeatherScreen extends StatefulWidget {
@@ -26,13 +29,23 @@ class _WeatherScreenState extends State<WeatherScreen> {
     _weatherData = new Map<String, dynamic>();
   }
 
-  // void dispose() {
-  //   super.dispose();
-  // }
-
   Future<void> _fetchWeatherData(String city) async {
     try {
       final weatherData = await _weatherService.getWheather(city);
+      setState(() {
+        _weatherData = weatherData;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _fetchWeatherLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      final weatherData = await _weatherService.getWeatherByLocation(
+          position.latitude, position.longitude);
       setState(() {
         _weatherData = weatherData;
       });
@@ -46,52 +59,37 @@ class _WeatherScreenState extends State<WeatherScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text("Exemplo Weather-API")),
       body: Padding(
-        padding: EdgeInsets.all(12),
-        child: Center(
-          child: Form(
-            key: formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: _cityController,
-                  decoration: const InputDecoration(labelText: "Digite a Cidade"),
-                  validator: (value) {
-                    if (value!.trim().isEmpty) {
-                      return "Insira a Cidade";
-                    } else {
-                      return null;
-                    }
-                  },
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      _fetchWeatherData(_cityController.text);
-                    }
-                  },
-                  child: const Text("Buscar"),
-                ),
-                SizedBox(height: 20),
-                _weatherData.isEmpty
-                    ? const Text('')
-                    : Column(
-                        children: [
-                          Text(
-                            'Cidade: ${_weatherData['name']}',
-                          ),
-                          Text(
-                            'Temperatura: ${(_weatherData['main']['temp'] - 273.15).toStringAsFixed(2)} °C',
-                          ),
-                          Text(
-                            'Descriçâo: ${_weatherData['weather'][0]['description']}',
-                          ),
-                        ],
-                      ),
-              ],
-            ),
-          ),
-        ),
-      ),
+          padding: EdgeInsets.all(12),
+          child: FutureBuilder(
+              future: _fetchWeatherLocation(),
+              builder: (context, snapshot) {
+                if (_weatherData.isEmpty) {
+                  return Center(child:CircularProgressIndicator());
+                } else {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Cidade: ${_weatherData['name']}',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Temperatura: ${(_weatherData['main']['temp'] - 273.15).toStringAsFixed(2)} °C',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Descrição: ${_weatherData['weather'][0]['description']}',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              })),
     );
   }
 }

@@ -1,0 +1,3 @@
+class Wheader {
+  //atributos
+}
