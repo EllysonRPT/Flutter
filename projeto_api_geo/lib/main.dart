@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_api_geo/View/home_screen.dart';
 
+import 'View/favorites_screen.dart';
+import 'View/historico_screen.dart';
+
 void main() {
   runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +16,7 @@ class MyApp extends StatelessWidget {
     theme: ThemeData(primarySwatch: Colors.amber),
     home: HomeScreen(),
     debugShowCheckedModeBanner: false,
+  
     );
   }
 }
