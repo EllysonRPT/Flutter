@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-
-import '../Service/wheater_service.dart';
+import '../Controller/wheather_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,36 +10,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Map<String, dynamic> _weatherData = {};
-  WeatherService _weatherService = WeatherService();
+  final WeatherController _controller = WeatherController();
 
   @override
   void initState() {
     super.initState();
-    _weatherData = new Map<String, dynamic>();
     _getWeatherInit();
-  }
-
-  Future<void> _fetchWeatherData(String city) async {
-    try {
-      final weatherData = await _weatherService.getWheather(city);
-      setState(() {
-        _weatherData = weatherData;
-      });
-    } catch (e) {
-      print(e);
-    }
   }
 
   Future<void> _getWeatherInit() async {
     try {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      final weatherData = await _weatherService.getWeatherByLocation(
-          position.latitude, position.longitude);
-      setState(() {
-        _weatherData = weatherData;
-      });
+      Position position = await Geolocator.getCurrentPosition();
+      await _controller.getWeatherbyLocation(position.latitude, position.longitude);
+      setState(() {});
     } catch (e) {
       print(e);
     }
@@ -50,76 +32,67 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Previsao Tempo'),
+        title: const Text("Previsão do Tempo"),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Adicione a função para lidar com a busca aqui
-            },
+            icon: const Icon(Icons.search),
+            onPressed: () {},
           ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Column(
           children: [
             Row(
               children: [
-                Row(
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/search');
+                  },
+                  child: const Text("Search"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/details');
+                  },
+                  child: const Text("Favoritos"),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _controller.weatherList.isEmpty
+              ? Row(
                   children: [
+                    const Text("Erro de Conexão"),
                     IconButton(
-                      icon: const Icon(Icons.search),
+                      icon: const Icon(Icons.refresh),
+                      onPressed: () {
+                        _getWeatherInit();
+                      },
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    Text(_controller.weatherList.last.name),
+                    const SizedBox(height: 10),
+                    Text(_controller.weatherList.last.main),
+                    const SizedBox(height: 10),
+                    Text(_controller.weatherList.last.description),
+                    const SizedBox(height: 10),
+                    Text((_controller.weatherList.last.temp - 273).toStringAsFixed(2)),
+                    IconButton(
+                      icon: const Icon(Icons.refresh),
                       onPressed: () {
                         _getWeatherInit();
                       },
                     ),
                   ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            _weatherData.isEmpty
-                ? Row(
-                    children: [
-                      Text("erro de conexao"),
-                      IconButton(icon: Icon(Icons.refresh), onPressed: () {})
-                    ],
-                  )
-                : Column(
-                    children: [
-                      Text(
-                        _weatherData['name'],
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        _weatherData['weather'][0]['description'],
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        _weatherData['main']['temp'].toString(),
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        _weatherData['main']['temp_min'].toString(),
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        _weatherData['main']['temp_max'].toString(),
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        _weatherData['main']['humidity'].toString(),
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        _weatherData['main']['pressure'].toString(),
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ],
-                  )
           ],
-          // Seu conteúdo da tela aqui
         ),
       ),
     );
