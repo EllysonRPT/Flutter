@@ -1,6 +1,0 @@
-//   IconButton(
-//                       icon: const Icon(Icons.refresh),
-//                       onPressed: () {
-//                        _controller.getWeather(widget.city);
-//                       },
-//                     // ),

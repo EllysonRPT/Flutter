@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:projeto_api_geo/Service/city_db_service.dart';
 
 import '../Controller/wheather_controller.dart';
+import '../Model/city_model.dart';
 
 class DetailsWeatherScreen extends StatefulWidget {
   final String city;
-  const DetailsWeatherScreen({required this.city});
+  const DetailsWeatherScreen({Key? key, required this.city}) : super(key: key);
+  
 
   @override
   State<DetailsWeatherScreen> createState() => _DetailsWeatherScreenState();
@@ -12,87 +16,50 @@ class DetailsWeatherScreen extends StatefulWidget {
 
 class _DetailsWeatherScreenState extends State<DetailsWeatherScreen> {
   final WeatherController _controller = WeatherController();
-  Future<void>? _weatherFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _weatherFuture = _fetchWeather();
-  }
-
-  Future<void> _fetchWeather() async {
-    await _controller.getWeather(widget.city);
-  }
+  final CityDataBaseService _dbService = CityDataBaseService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Weather Details"),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(12),
-        child: Center(
-          child: FutureBuilder<void>(
-            future: _weatherFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError || _controller.weatherList.isEmpty) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Connection Error", style: TextStyle(fontSize: 20)),
-                    SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _weatherFuture = _fetchWeather();
-                        });
-                      },
-                      child: Text("Try Again"),
-                    ),
-                  ],
-                );
-              } else {
-                final weather = _controller.weatherList.last;
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          weather.name,
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        SizedBox(width: 8),
-                        Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                          size: 24,
-                        ),
-                      ],
-                    ),
-                    Text(
-                      weather.main,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Text(
-                      weather.description,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Text(
-                      (weather.temp - 273.15).toStringAsFixed(2) + "°C",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ],
-                );
-              }
-            },
-          ),
+        appBar: AppBar(
+          title: const Text('Detalhes'),
         ),
-      ),
-    );
+        body: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Center(
+                child: FutureBuilder(
+                    future: _controller.getWeather(widget.city),
+                    builder: (context, snapshot) {
+                      if (_controller.weatherList.isEmpty) {
+                        return const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                          ],
+                        );
+                      } else {
+                        return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(_controller.weatherList.last.name),
+                                  //icon favorite
+                                  IconButton(
+                                    icon: const Icon(Icons.favorite),
+                                    onPressed: () {
+                                      //criar método para favoritar
+                                    },
+                                  )
+                                ],
+                              ),
+                              Text(_controller.weatherList.last.main),
+                              Text(_controller.weatherList.last.description),
+                              Text((_controller.weatherList.last.temp - 273)
+                                  .toStringAsFixed(2))
+                            ]);
+                      }
+                    }))));
   }
 }
