@@ -1,0 +1,45 @@
+{
+  "usuarios": [
+    {
+      "id": "1",
+      "nome": "João",
+      "email": "joao123@exemplo.com"
+    },
+    {
+      "id": "2",
+      "nome": "Maria",
+      "email": "maria@exemplo.com"
+    },
+    {
+      "id": "3",
+      "nome": "pedro",
+      "email": "pedro@exemplo.com"
+    }
+  ],
+  "produtos": [
+    {
+      "id": "1",
+      "nome": "Produto 1",
+      "preco": 100,
+      "codigo": "A1"
+    },
+    {
+      "id": "2",
+      "nome": "Produto 2",
+      "preco": 200,
+      "codigo": "A2"
+    },
+    {
+      "id": "3",
+      "nome": "Produto 3",
+      "preco": 300,
+      "codigo": "A3"
+    },
+    {
+      "id": "4",
+      "nome": "nice ",
+      "codigo": "ar",
+      "preco": 555
+    }
+  ]
+}

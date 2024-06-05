@@ -1,0 +1,4 @@
+homepage = lista de  produtos-V
+ -add produtos
+  -modelo(produtos)-M
+  -Controller(produtos)-C

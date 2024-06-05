@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "115792468688",
+    "project_id": "test-firebase-f3dd1",
+    "storage_bucket": "test-firebase-f3dd1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:115792468688:android:602449a2443b1a7d641cd5",
+        "android_client_info": {
+          "package_name": "br.com.ellyson"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8rqlu2SrqXGgpYHiDcEe2eHAz_fUXZdU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
