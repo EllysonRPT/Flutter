@@ -58,7 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-  Future<User> _RegistrarUser() async {
+  Future<User?> _RegistrarUser() async {
     if (_formKey.currentState.validate()) {
       if (_passwordController.text==_confirmedPasswordController.text) {
       return await _service.registerUsuario(
