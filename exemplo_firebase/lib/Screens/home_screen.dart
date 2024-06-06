@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Login',
+              'Home Screen',
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
@@ -28,7 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/login');
+                Navigator.pushReplacementNamed
+                (context, '/login');
               },
               child: Text('Login'),
             ),
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/Registro');
+                Navigator.pushReplacementNamed(context, '/register');
                  
               },
               child: Text('Registro'),
