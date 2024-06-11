@@ -31,7 +31,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(hintText: 'Email'),
-                            validator: (value) {}),
+                            validator: (value) {
+                              if(value!.isEmpty){
+                    return 'Insira um e-mail';
+                  }
+                    return null;
+                            }),
                         TextFormField(
                             controller: _passwordController,
                             decoration: InputDecoration(hintText: 'Password'),
@@ -45,21 +50,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           height: 20,
                         ),
                         //Elevetead button
-                        ElevatedButton(
-                            onPressed: () {
-                              _registrarUser().then((value) {
-                                if (value != null) {
-                                  Navigator.pushReplacementNamed(
-                                      context, '/login');
-                                }
-                              });
-                            },
-                            child: Text('Register')),
-                      ])))),
+                       ElevatedButton(
+                  onPressed: (){ _registrarUser();},
+                  child: Text('Registrar'),
+                )],
+                      )))),
     );
   }
   // bool emailExists = await _auth.checkIfEmailExists(_emailController.text);
-  Future<User?> _registrarUser() async {
+  Future<void> _registrarUser() async {
     
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text == _confirmedPasswordController.text) {
@@ -68,9 +67,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             content: Text('Register Successful'),
           ),
         );
-        return await _service.registerUsuario(
+             _service.registerUsuario(
             _emailController.text, _confirmedPasswordController.text);
         //navegação para págian interna
+               Navigator.pushNamed(context, '/login');
+
+        
       }
       //  else if (_emailController ) {}
        else if (_passwordController.text.length < 6) {
@@ -90,7 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
         _passwordController.clear();
         _confirmedPasswordController.clear();
-        return null;
+       
       }
     }
   }

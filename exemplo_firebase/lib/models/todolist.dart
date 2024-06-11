@@ -12,7 +12,7 @@ class Todolist {
     return {
       'id': id,
       'titulo': titulo,
-      'userId': userId,
+      'userid': userId,
       'timeStamp': timeStamp.toString(),
     };
   }
@@ -22,7 +22,7 @@ class Todolist {
     return Todolist(
       id: map['id'],
       titulo: map['titulo'],
-      userId: map['userId'],
+      userId: map['userid'],
       timeStamp: map['timeStamp'],
     );
   }
