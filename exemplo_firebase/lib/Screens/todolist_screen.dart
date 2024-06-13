@@ -3,7 +3,6 @@ import 'package:exemplo_firebase/services/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../Controller/todolist_controller.dart';
 
 class TodolistScreen extends StatefulWidget {
@@ -16,18 +15,23 @@ class TodolistScreen extends StatefulWidget {
 
 class _TodolistScreenState extends State<TodolistScreen> {
   final AuthServices _service = AuthServices();
-  final TodolistController _controller =TodolistController();
+  final TodolistController _controller = TodolistController();
   final _tituloController = TextEditingController();
 
-  Future<void> _getList() async{
+  Future<void> _getList() async {
     try {
       await _controller.fetchList(widget.user.uid);
-      setState(() {});
+      setState(() {});  // Refresh the UI after fetching the list
     } catch (e) {
       print(e.toString());
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _getList();  // Fetch list when the screen initializes
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,77 +42,74 @@ class _TodolistScreenState extends State<TodolistScreen> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
-              //chamar o logout
               await _service.logoutUsuario();
               Navigator.pushReplacementNamed(context, '/home');
-            })]
+            },
+          ),
+        ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Center(
-          child: Expanded(
-            child: FutureBuilder(
-              future: _getList(), 
-              builder: (context,snapshot){
-                if(_controller.list.isNotEmpty){
-                  return ListView.builder(
-                    itemCount: _controller.list.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(_controller.list[index].titulo),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () async {
-                            await _controller.delete(_controller.list[index].id);
-                            _getList();
-                          },
-                        ),
-                      );
-                    },
-                  );
-                }else if(snapshot.hasError){
-                  return Text(snapshot.error.toString());
-                }else{
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              }),)
+          child: _controller.list.isNotEmpty
+              ? ListView.builder(
+                  itemCount: _controller.list.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(_controller.list[index].titulo),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () async {
+                          await _controller.delete(_controller.list[index].doc!);
+                          _getList();
+                        },
+                      ),
+                    );
+                  },
+                )
+              : const Center(child: CircularProgressIndicator()),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        child: const Icon(Icons.add),
+        onPressed: () {
           showDialog(
-            context: context, 
-            builder: (context){
+            context: context,
+            builder: (context) {
               return AlertDialog(
                 title: Text("Nova Tarefa"),
                 content: TextFormField(
                   controller: _tituloController,
-                  decoration: InputDecoration(hintText: "Digite a tarefa"),
+                  decoration: const InputDecoration(hintText: "Digite a tarefa"),
                 ),
                 actions: [
                   TextButton(
                     child: Text("Cancelar"),
-                    onPressed: (){
+                    onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: Text("Salvar"),
-                    onPressed: (){
+                    onPressed: () async {
                       Navigator.of(context).pop();
                       Todolist add = Todolist(
-                        id:(_controller.list.length+1).toString(),
+                        id: (_controller.list.length + 1).toString(),
                         titulo: _tituloController.text,
                         userId: widget.user.uid,
-                        timeStamp: DateTime.now()
+                        timeStamp: DateTime.now(),
                       );
-                      _controller.add(add);
+                      await _controller.add(add);
+                      _tituloController.clear();
                       _getList();
-                    })]);
-            });
-        })
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

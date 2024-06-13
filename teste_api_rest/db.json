@@ -46,9 +46,9 @@
     "audios":[
     {
       "id":"1",
-      "title":"jazz",
+      "title":"class",
       "artist":"Artista1",
-      "url":"http://www.dominiopublico.gov.br/download/som/gu10408.mp3"
+      "url":"http://www.dominiopublico.gov.br/pesquisa/DetalheObraForm.do?select_action=&co_obra=43543"
     },
     {
       "id":"2",
