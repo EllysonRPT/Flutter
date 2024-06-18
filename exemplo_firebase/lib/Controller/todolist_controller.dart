@@ -9,9 +9,21 @@ class TodolistController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> add(Todolist todolist) async {
-    DocumentReference docRef = await _firestore.collection('todolist').add(todolist.toMap());
-    // Optionally, refresh the list after adding a new item
-    await fetchList(todolist.userId);
+    try {
+      // Check if the task with the same title already exists
+      bool hasDuplicate = _list.any((task) => task.titulo == todolist.titulo);
+
+      if (hasDuplicate) {
+        throw 'Já existe uma tarefa com o mesmo nome.';
+      } else {
+        DocumentReference docRef = await _firestore.collection('todolist').add(todolist.toMap());
+        // Optionally, refresh the list after adding a new item
+        await fetchList(todolist.userId);
+      }
+    } catch (e) {
+      print("Error adding document: $e");
+      throw e; // Rethrow the error to handle it in the UI if needed
+    }
   }
 
   // Delete a todo list item by its document ID
@@ -23,6 +35,7 @@ class TodolistController {
       _list.removeWhere((todolist) => todolist.doc == docId);
     } catch (e) {
       print("Error deleting document: $e");
+      throw e;
     }
   }
 
@@ -54,6 +67,7 @@ class TodolistController {
       await fetchList(todolist.userId);
     } catch (e) {
       print("Error updating document: $e");
+      throw e;
     }
   }
 }

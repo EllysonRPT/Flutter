@@ -1,13 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:exemplo_firebase/models/todolist.dart';
 import 'package:exemplo_firebase/services/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import '../Controller/todolist_controller.dart';
 
 class TodolistScreen extends StatefulWidget {
   final User user;
-  const TodolistScreen({super.key, required this.user});
+  const TodolistScreen({Key? key, required this.user}) : super(key: key); // Corrigido o super.key
 
   @override
   State<TodolistScreen> createState() => _TodolistScreenState();
@@ -21,23 +20,23 @@ class _TodolistScreenState extends State<TodolistScreen> {
   Future<void> _getList() async {
     try {
       await _controller.fetchList(widget.user.uid);
-      setState(() {});  // Refresh the UI after fetching the list
+      setState(() {});  // Atualiza a UI após buscar a lista
     } catch (e) {
-      print(e.toString());
+      print("Erro ao buscar lista: $e");
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _getList();  // Fetch list when the screen initializes
+    _getList();  // Busca a lista quando a tela é inicializada
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo List Firebase'),
+        title: const Text('Lista de Tarefas'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -60,7 +59,7 @@ class _TodolistScreenState extends State<TodolistScreen> {
                       trailing: IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () async {
-                          await _controller.delete(_controller.list[index].doc!);
+                          await _controller.delete(_controller.list[index].id!);
                           _getList();
                         },
                       ),
@@ -93,15 +92,40 @@ class _TodolistScreenState extends State<TodolistScreen> {
                     child: Text("Salvar"),
                     onPressed: () async {
                       Navigator.of(context).pop();
-                      Todolist add = Todolist(
-                        id: (_controller.list.length + 1).toString(),
-                        titulo: _tituloController.text,
-                        userId: widget.user.uid,
-                        timeStamp: DateTime.now(),
-                      );
-                      await _controller.add(add);
-                      _tituloController.clear();
-                      _getList();
+                      
+                      // Verifica se já existe uma tarefa com o mesmo título
+                      bool hasDuplicate = _controller.list.any((task) =>
+                          task.titulo.toLowerCase() == _tituloController.text.toLowerCase());
+
+                      if (hasDuplicate) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text("Erro"),
+                              content: Text("Já existe uma tarefa com o mesmo nome."),
+                              actions: [
+                                TextButton(
+                                  child: Text("OK"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        Todolist add = Todolist(
+                          id: (_controller.list.length + 1).toString(),
+                          titulo: _tituloController.text,
+                          userId: widget.user.uid,
+                          timeStamp: DateTime.now(),
+                        );
+                        await _controller.add(add);
+                        _tituloController.clear();
+                        _getList();
+                      }
                     },
                   ),
                 ],
