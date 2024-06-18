@@ -1,6 +1,6 @@
-import 'package:exemplo_audio_play/Screens/audio_play_screen.dart';
 import 'package:flutter/material.dart';
 import '../Service/audio_service.dart';
+import 'audio_play_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -73,7 +73,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => AudioPlayerScreen(
-                            audio: _service.list[index],
+                            audioList: _service.list,
+                            initialIndex: index,
                           ),
                         ),
                       );
