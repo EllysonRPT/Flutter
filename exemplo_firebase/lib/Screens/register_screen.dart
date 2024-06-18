@@ -1,11 +1,11 @@
-import 'package:exemplo_firebase/services/auth_services.dart';
 import 'package:flutter/material.dart';
+import 'package:exemplo_firebase/services/auth_services.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
@@ -15,7 +15,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _confirmedPasswordController =
       TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   String? _emailError;
 
   @override
@@ -93,20 +92,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                   ),
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/'); // Navega para a tela inicial (HomeScreen)
+                    Navigator.pushReplacementNamed(
+                        context, '/login'); // Navega para a tela de login (ou outra tela desejada)
                   },
-                  child: Text('Home'),
+                  child: Text('Login'),
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                   ),
                 ),
               ],
@@ -123,16 +125,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _emailError = null; // Limpa o erro de e-mail antes de verificar novamente
       });
 
-      try {
-        // Verifica se o e-mail já está em uso antes de tentar registrar
-        bool emailExists = await _service.checkIfEmailExists(_emailController.text);
-        if (emailExists) {
-          setState(() {
-            _emailError = 'Este e-mail já está sendo usado';
-          });
-          return;
-        }
+      String? emailError = await _service.checkIfEmailExists(_emailController.text);
+      if (emailError != null) {
+        setState(() {
+          _emailError = emailError; // Define o erro de e-mail existente
+        });
+        return;
+      }
 
+      try {
         await _service.registerUsuario(
           _emailController.text,
           _confirmedPasswordController.text,
