@@ -21,27 +21,44 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
+                color: Colors.blueAccent,
               ),
             ),
-            SizedBox(
-              height: 20,
+            const SizedBox(
+              height: 40,
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15), backgroundColor: Colors.blueAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ), // Background color
+              ),
               onPressed: () {
-                Navigator.pushReplacementNamed
-                (context, '/login');
+                Navigator.pushReplacementNamed(context, '/login');
               },
-              child: Text('Login'),
+              child: const Text(
+                'Login',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15), backgroundColor: Colors.greenAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ), // Background color
+              ),
               onPressed: () {
                 Navigator.pushReplacementNamed(context, '/register');
-                 
               },
-              child: Text('Registro'),
+              child: const Text(
+                'Registro',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ],
         ),

@@ -1,12 +1,11 @@
-import 'package:exemplo_firebase/services/auth_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:exemplo_firebase/services/auth_services.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
@@ -16,81 +15,141 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _confirmedPasswordController =
       TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? _emailError;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //form register screen
+      appBar: AppBar(
+        title: Text('Registrar'),
+      ),
       body: Padding(
-          padding: EdgeInsets.all(8),
-          child: Center(
-              child: Form(
-                  key: _formKey,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        TextFormField(
-                            controller: _emailController,
-                            decoration: InputDecoration(hintText: 'Email'),
-                            validator: (value) {}),
-                        TextFormField(
-                            controller: _passwordController,
-                            decoration: InputDecoration(hintText: 'Password'),
-                            validator: (value) {}),
-                        TextFormField(
-                            controller: _confirmedPasswordController,
-                            decoration:
-                                InputDecoration(hintText: 'Confimed Password'),
-                            validator: (value) {}),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        //Elevetead button
-                        ElevatedButton(
-                            onPressed: () {
-                              _registrarUser().then((value) {
-                                if (value != null) {
-                                  Navigator.pushReplacementNamed(
-                                      context, '/login');
-                                }
-                              });
-                            },
-                            child: Text('Register')),
-                      ])))),
+        padding: EdgeInsets.all(16),
+        child: Center(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                    errorText: _emailError,
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Insira um e-mail';
+                    }
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                      return 'Insira um email válido';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    labelText: 'Senha',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Insira uma senha';
+                    }
+                    if (value.length < 6) {
+                      return 'A senha deve ter pelo menos 6 caracteres';
+                    }
+                    return null;
+                  },
+                  obscureText: true,
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _confirmedPasswordController,
+                  decoration: InputDecoration(
+                    labelText: 'Confirmar Senha',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Confirme sua senha';
+                    }
+                    if (value != _passwordController.text) {
+                      return 'As senhas não coincidem';
+                    }
+                    return null;
+                  },
+                  obscureText: true,
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _registrarUser,
+                  child: Text('Registrar'),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(
+                        context, '/login'); // Navega para a tela de login (ou outra tela desejada)
+                  },
+                  child: Text('Login'),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
-  // bool emailExists = await _auth.checkIfEmailExists(_emailController.text);
-  Future<User?> _registrarUser() async {
-    
+
+  Future<void> _registrarUser() async {
     if (_formKey.currentState!.validate()) {
-      if (_passwordController.text == _confirmedPasswordController.text) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Register Successful'),
-          ),
-        );
-        return await _service.registerUsuario(
-            _emailController.text, _confirmedPasswordController.text);
-        //navegação para págian interna
+      setState(() {
+        _emailError = null; // Limpa o erro de e-mail antes de verificar novamente
+      });
+
+      String? emailError = await _service.checkIfEmailExists(_emailController.text);
+      if (emailError != null) {
+        setState(() {
+          _emailError = emailError; // Define o erro de e-mail existente
+        });
+        return;
       }
-      //  else if (_emailController ) {}
-       else if (_passwordController.text.length < 6) {
+
+      try {
+        await _service.registerUsuario(
+          _emailController.text,
+          _confirmedPasswordController.text,
+        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('As senhas menor que 6 digitos'),
+            content: Text('Registro realizado com sucesso!'),
           ),
         );
-        _passwordController.clear();
-        _confirmedPasswordController.clear();
-        return null;
-      } else {
+        Navigator.pushReplacementNamed(context, '/login'); // Navega para a tela de login após o registro
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('As senhas não conferem!'),
+            content: Text('Erro ao registrar: ${e.toString()}'),
           ),
         );
-        _passwordController.clear();
-        _confirmedPasswordController.clear();
-        return null;
       }
     }
   }

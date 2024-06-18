@@ -41,5 +41,38 @@
       "codigo": "ar",
       "preco": 555
     }
+  ],
+  
+    "audios":[
+    {
+      "id":"1",
+      "title":"class",
+      "artist":"Violin",
+      "url":"http://www.dominiopublico.gov.br/download/som/gu10408.mp3"
+    },
+    {
+      "id":"2",
+      "title":"Bandeira",
+      "artist":"Artista1",
+      "url":"http://www.dominiopublico.gov.br/download/som/ex000002.mp3"
+    },
+    {
+      "id":"3",
+      "title":"SEILA",
+      "artist":"Artista1",
+      "url":"http://www.dominiopublico.gov.br/download/som/ea000123.mp3"
+    },{
+
+      "id":"4",
+      "title":"Tabom",
+      "artist":"Artista1",
+      "url":"http://www.dominiopublico.gov.br/download/som/gu10269.mp3"
+    },{
+      "id":"5",
+      "title":"Antigao",
+      "artist":"Artista1",
+      "url":"http://www.dominiopublico.gov.br/download/som/gu10168.mp3"
+    }
   ]
+  
 }
