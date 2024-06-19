@@ -6,7 +6,7 @@ import '../Controller/todolist_controller.dart';
 
 class TodolistScreen extends StatefulWidget {
   final User user;
-  const TodolistScreen({Key? key, required this.user}) : super(key: key); // Corrigido o super.key
+  const TodolistScreen({Key? key, required this.user}) : super(key: key);
 
   @override
   State<TodolistScreen> createState() => _TodolistScreenState();
@@ -20,7 +20,7 @@ class _TodolistScreenState extends State<TodolistScreen> {
   Future<void> _getList() async {
     try {
       await _controller.fetchList(widget.user.uid);
-      setState(() {});  // Atualiza a UI após buscar a lista
+      setState(() {});
     } catch (e) {
       print("Erro ao buscar lista: $e");
     }
@@ -29,7 +29,7 @@ class _TodolistScreenState extends State<TodolistScreen> {
   @override
   void initState() {
     super.initState();
-    _getList();  // Busca a lista quando a tela é inicializada
+    _getList();
   }
 
   @override
@@ -59,7 +59,7 @@ class _TodolistScreenState extends State<TodolistScreen> {
                       trailing: IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () async {
-                          await _controller.delete(_controller.list[index].id!);
+                          await _controller.delete(_controller.list[index].doc!);
                           _getList();
                         },
                       ),
@@ -92,8 +92,7 @@ class _TodolistScreenState extends State<TodolistScreen> {
                     child: Text("Salvar"),
                     onPressed: () async {
                       Navigator.of(context).pop();
-                      
-                      // Verifica se já existe uma tarefa com o mesmo título
+
                       bool hasDuplicate = _controller.list.any((task) =>
                           task.titulo.toLowerCase() == _tituloController.text.toLowerCase());
 

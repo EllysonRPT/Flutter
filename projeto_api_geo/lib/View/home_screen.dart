@@ -3,7 +3,6 @@ import 'package:geolocator/geolocator.dart';
 import '../Controller/wheather_controller.dart';
 import 'favorites_screen.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -47,8 +46,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: () {
@@ -68,36 +69,53 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            _controller.weatherList.isEmpty
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Erro de Conexão"),
-                      IconButton(
-                        icon: const Icon(Icons.refresh),
-                        onPressed: () {
-                          _getWeatherInit();
-                        },
+            Expanded(
+              child: _controller.weatherList.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Erro de Conexão"),
+                          IconButton(
+                            icon: const Icon(Icons.refresh),
+                            onPressed: () {
+                              _getWeatherInit();
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  )
-                : Column(
-                    children: [
-                      Text(_controller.weatherList.last.name),
-                      const SizedBox(height: 10),
-                      Text(_controller.weatherList.last.main),
-                      const SizedBox(height: 10),
-                      Text(_controller.weatherList.last.description),
-                      const SizedBox(height: 10),
-                      Text((_controller.weatherList.last.temp - 273).toStringAsFixed(2)),
-                      IconButton(
-                        icon: const Icon(Icons.refresh),
-                        onPressed: () {
-                          _getWeatherInit();
-                        },
-                      ),
-                    ],
-                  ),
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          _controller.weatherList.last.name,
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          _controller.weatherList.last.main,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          _controller.weatherList.last.description,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          '${(_controller.weatherList.last.temp - 273).toStringAsFixed(2)} °C',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.refresh),
+                          onPressed: () {
+                            _getWeatherInit();
+                          },
+                        ),
+                      ],
+                    ),
+            ),
           ],
         ),
       ),

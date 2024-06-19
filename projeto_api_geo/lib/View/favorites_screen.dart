@@ -33,19 +33,26 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         title: const Text('Cidades Favoritas'),
       ),
       body: _favorites.isEmpty
-          ? const Center(child: Text('Nenhuma cidade favoritada.'))
+          ? Center(child: Text('Nenhuma cidade favoritada.', style: TextStyle(fontSize: 18)))
           : ListView.builder(
               itemCount: _favorites.length,
               itemBuilder: (context, index) {
                 final city = _favorites[index];
-                return ListTile(
-                  title: Text(city.cityName),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async {
-                      await _favoritesService.removeFavorite(city);
-                      _loadFavorites();
-                    },
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  elevation: 4,
+                  child: ListTile(
+                    title: Text(
+                      city.cityName,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () async {
+                        await _favoritesService.removeFavorite(city);
+                        _loadFavorites();
+                      },
+                    ),
                   ),
                 );
               },

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_api_geo/Service/city_db_service.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../Controller/wheather_controller.dart';
@@ -16,7 +15,6 @@ class DetailsWeatherScreen extends StatefulWidget {
 
 class _DetailsWeatherScreenState extends State<DetailsWeatherScreen> {
   final WeatherController _controller = WeatherController();
-  final CityDataBaseService _dbService = CityDataBaseService();
   final FavoritesService _favoritesService = FavoritesService();
 
   final Map<String, String> weatherTranslations = {
@@ -79,7 +77,10 @@ class _DetailsWeatherScreenState extends State<DetailsWeatherScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalhes do Tempo'),
+        title: Text(
+          'Detalhes do Tempo',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -88,30 +89,35 @@ class _DetailsWeatherScreenState extends State<DetailsWeatherScreen> {
             future: _controller.getWeather(widget.city),
             builder: (context, snapshot) {
               if (_controller.weatherList.isEmpty) {
-                return const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                  ],
+                return Center(
+                  child: CircularProgressIndicator(),
                 );
               } else {
                 final weather = _controller.weatherList.last;
                 final backgroundColor = getBackgroundColor(weather.description);
                 return Container(
-                  color: backgroundColor,
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             weather.name,
                             style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                           IconButton(
                             icon: const Icon(Icons.favorite),
+                            color: Colors.white,
                             onPressed: () async {
                               final city = City(cityName: weather.name, favoriteCities: 1);
                               await _favoritesService.addFavorite(city);
@@ -119,18 +125,21 @@ class _DetailsWeatherScreenState extends State<DetailsWeatherScreen> {
                                 SnackBar(content: Text('${weather.name} foi adicionado aos favoritos.')),
                               );
                             },
-                          )
+                          ),
                         ],
                       ),
+                      SizedBox(height: 20),
                       Icon(
                         getWeatherIcon(weather.description),
                         size: 100.0,
                         color: Colors.white,
                       ),
+                      SizedBox(height: 10),
                       Text(
                         translateWeather(weather.description),
                         style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
+                      SizedBox(height: 10),
                       Text(
                         'Temperatura: ${(weather.temp - 273).toStringAsFixed(2)}°C',
                         style: TextStyle(fontSize: 16, color: Colors.white),
