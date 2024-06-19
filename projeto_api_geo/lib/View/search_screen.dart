@@ -7,7 +7,7 @@ import '../Model/city_model.dart';
 import 'details_weather_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({super.key});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();

@@ -1,6 +1,5 @@
-
-
 import '../Model/wheader_model.dart';
+
 import '../Service/wheater_service.dart';
 
 class WeatherController {
