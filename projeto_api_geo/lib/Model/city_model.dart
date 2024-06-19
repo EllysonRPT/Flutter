@@ -1,20 +1,23 @@
 class City {
+  //atributos
   final String cityName;
   final int favoriteCities;
-
+  //cosntrutor
   City({required this.cityName, required this.favoriteCities});
-
-  Map<String, dynamic> toMap() {
+  //metodos
+  
+  //toMap
+  Map<String,dynamic> toMap() {
     return {
-      "cityName": cityName,
-      "favoritecities": favoriteCities,
-    };
+    'cityname': cityName,
+    'favoritecities': favoriteCities};
   }
 
-  factory City.fromMap(Map<String, dynamic> map) {
+  //fromMap
+  factory City.fromMap(Map<String,dynamic> map ) {
     return City(
-      cityName: map['cityName'],
-      favoriteCities: map['favoritecities'],
+      cityName: map['cityname'],
+      favoriteCities:map['favoritecities'],
     );
   }
 }

@@ -60,7 +60,7 @@
       "id":"3",
       "title":"SEILA",
       "artist":"Artista1",
-      "url":"http://www.dominiopublico.gov.br/download/som/ea000123.mp3"
+      "url":"http://www.dominiopublico.gov.br/download/som/me000006.mp3"
     },{
 
       "id":"4",
@@ -72,6 +72,13 @@
       "title":"Antigao",
       "artist":"Artista1",
       "url":"http://www.dominiopublico.gov.br/download/som/gu10168.mp3"
+    },{
+"id":"6",
+      "title":"Independence",
+      "artist":"Artista1",
+      "url":"http://www.dominiopublico.gov.br/download/som/ex000004.mp3"
+
+
     }
   ]
   

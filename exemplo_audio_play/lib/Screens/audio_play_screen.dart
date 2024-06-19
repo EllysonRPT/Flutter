@@ -112,11 +112,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
               iconSize: 64.0,
               onPressed: _playPause,
             ),
-            IconButton(
-              icon: Icon(Icons.stop_circle),
-              iconSize: 64.0,
-              onPressed: _stop,
-            ),
+            
             IconButton(
               icon: Icon(Icons.replay_circle_filled),
               iconSize: 64.0,
